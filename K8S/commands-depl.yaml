@@ -1,0 +1,35 @@
+# Deployment of a container into a pod
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: commands-depl
+spec:
+  replicas: 1
+  # select the template
+  selector:
+    matchLabels:
+      app: commandservice
+  # define the pod and the container we want to use
+  template:
+    metadata:
+      labels:
+        app: commandservice
+    spec:
+      containers:
+        - name: commandservice
+          image: rawanad/commandservice:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: commands-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: commandservice
+  ports:
+    - name: commandservice
+      protocol: TCP
+      # Cluster IP port
+      port: 80
+      targetPort: 80
